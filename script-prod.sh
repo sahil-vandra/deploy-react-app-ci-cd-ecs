@@ -7,7 +7,6 @@ IMAGE_TAG="sahil-react-demo"
 CLUSTER_NAME="sahil-react-demo-cluster"
 SERVICE_NAME="sahil-react-demo-service"
 TASK_DEFINITION_NAME="sahil_react_demo_task_def"
-DESIRED_COUNT="1"
 ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
 
 # login in to aws ecr
@@ -15,7 +14,6 @@ ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 997817439961.dkr.ecr.ap-south-1.amazonaws.com
 
 # build new image
-#  docker build -t sahil-react-demo .
 # docker build -t 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo .
 docker build -t ${ECR_IMAGE} .
 
@@ -54,4 +52,3 @@ aws ecs deregister-task-definition --region ap-south-1 --task-definition ${TASK_
 
 # update servise
 aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
-
