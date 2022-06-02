@@ -9,17 +9,17 @@ SERVICE_NAME="sahil-react-demo-service"
 TASK_DEFINITION_NAME="sahil_react_demo_task_def"
 ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
 
-# # login in to aws ecr
-# # if not logged in the fire this command : "sudo chmod 666 /var/run/docker.sock"
-# aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 997817439961.dkr.ecr.ap-south-1.amazonaws.com
+# login in to aws ecr
+# if not logged in the fire this command : "sudo chmod 666 /var/run/docker.sock"
+aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 997817439961.dkr.ecr.ap-south-1.amazonaws.com
 
-# # build new image
-# # docker build -t 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo .
-# docker build -t ${ECR_IMAGE} .
+# build new image
+# docker build -t 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo .
+docker build -t ${ECR_IMAGE} .
 
-# # push image in aws ecr
-# # docker push 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo
-# docker push ${ECR_IMAGE}
+# push image in aws ecr
+# docker push 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo
+docker push ${ECR_IMAGE}
 
 # get role arn store in variable 
 ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
