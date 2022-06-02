@@ -23,14 +23,15 @@ docker push ${ECR_IMAGE}
 
 # get role arn store in variable 
 ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
+echo "ROLE_ARN= " $ROLE_ARN
 
 # get family store in variable 
 FAMILY=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.family`
-#echo "FAMILY= " $FAMILY
+echo "FAMILY= " $FAMILY
 
 # get name arn store in variable 
 NAME=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.containerDefinitions[].name`
-#echo "NAME= " $NAME
+echo "NAME= " $NAME
 
 # find and replace some content in task-definition file
 sed -i "s#BUILD_NUMBER#$ECR_IMAGE#g" task-definition.json
@@ -41,8 +42,11 @@ sed -i "s#NAME#$NAME#g" task-definition.json
 
 # Get task definition from the aws console
 TASK_DEF_REVISION=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.revision`
+echo "TASK_DEF_REVISION= " $TASK_DEF_REVISION
 
-# cat task-definition.json
+echo "task definition =================================================================="
+cat task-definition.json
+echo "task definition =================================================================="
 
 # register new task definition from new generated task definition file
 aws ecs register-task-definition --cli-input-json file://task-definition.json --region="${AWS_DEFAULT_REGION}"
