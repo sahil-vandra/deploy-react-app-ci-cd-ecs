@@ -18,6 +18,7 @@ function App() {
         >
           Learn React
         </a>
+        <h1>Good Morning Thursday 2 june 02:01 PM</h1>
       </header>
     </div>
   );
