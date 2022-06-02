@@ -9,6 +9,9 @@ SERVICE_NAME="sahil-react-demo-service"
 TASK_DEFINITION_NAME="sahil_react_demo_task_def"
 ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
 
+# docker image prune -a
+docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+
 # login in to aws ecr
 # if not logged in the fire this command : "sudo chmod 666 /var/run/docker.sock"
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 997817439961.dkr.ecr.ap-south-1.amazonaws.com
