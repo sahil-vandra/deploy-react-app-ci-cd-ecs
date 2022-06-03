@@ -83,15 +83,15 @@ echo "----------------------------------------- new service updated ------------
 while true ; do
   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster sahil-react-demo-cluster --services sahil-react-demo-service | jq .services[0].deployments[0].runningCount`
   
-  if [ "$SERVICE_TASK_STATUS" -eq 3 ]; then
+  if [ "$SERVICE_TASK_STATUS" -eq 3 ] && [ "$SERVICE_TASK_STATUS" -lt  4 ]; then
     echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
     break
   fi
 done
 
+aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
+
 SERVICE_TASK_STATUS=`aws ecs describe-services --cluster sahil-react-demo-cluster --services sahil-react-demo-service | jq .services[0].deployments[0].runningCount`
 echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 echo "-------------------------------------------------------------------------------------------------------"
-
-aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
