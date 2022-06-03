@@ -33,15 +33,15 @@ echo "------------------------------------------ docker image pushed -----------
 
 # get role arn store in variable 
 ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
-echo "ROLE_ARN= " $ROLE_ARN
+# echo "ROLE_ARN= " $ROLE_ARN
 
 # get family store in variable 
 FAMILY=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.family`
-echo "FAMILY= " $FAMILY
+# echo "FAMILY= " $FAMILY
 
 # get name arn store in variable 
 NAME=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.containerDefinitions[].name`
-echo "NAME= " $NAME
+# echo "NAME= " $NAME
 
 # find and replace some content in task-definition file
 sed -i "s#BUILD_NUMBER#$ECR_IMAGE#g" task-definition.json
@@ -52,7 +52,7 @@ sed -i "s#NAME#$NAME#g" task-definition.json
 
 # Get task definition from the aws console
 TASK_DEF_REVISION=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.revision`
-echo "TASK_DEF_REVISION= " $TASK_DEF_REVISION
+# echo "TASK_DEF_REVISION= " $TASK_DEF_REVISION
 
 echo "--------------------------------------------- task definition -----------------------------------------"
 cat task-definition.json
@@ -70,36 +70,21 @@ echo "--------------------------------- previous task definition deregistered --
 
 # update servise
 echo "------------------------------------------ updare new service -----------------------------------------"
-aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
+aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --desired-count 3 --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
 echo "----------------------------------------- new service updated -----------------------------------------"
 
-echo "---------------------------------------------- service ------------------------------------------------"
-aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
-echo "---------------------------------------------- service ------------------------------------------------"
-
+# aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
 
 SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
-echo "-------------------------------------------------------------------------------------------------------"
-echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+# echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 
 while true ; do
   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
-  echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
   
   if [ "$SERVICE_TASK_STATUS" -eq 1 ]; then
       break
   fi
 done
-
-# for i in $(seq 1 100);
-# do
-#   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
-#   echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
-
-#   if [ "$SERVICE_TASK_STATUS" == 1 ]; then
-#   echo "Test IF";
-# fi
-# done
 
 SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
 echo "-------------------------------------------------------------------------------------------------------"
