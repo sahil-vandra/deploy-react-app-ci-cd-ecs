@@ -10,6 +10,7 @@ TASK_DEFINITION_NAME="sahil_react_demo_task_def"
 ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
 
 # docker image prune -a
+# docker system prune -a
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 # login in to aws ecr
