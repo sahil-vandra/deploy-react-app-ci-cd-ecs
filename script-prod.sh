@@ -97,4 +97,4 @@ echo "--------------------------------------------------------------------------
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK
 echo "-------------------------------------------------------------------------------------------------------"
 
-aws ecs describe-services --cluster "${CLUSTER_NAME}"
+aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
