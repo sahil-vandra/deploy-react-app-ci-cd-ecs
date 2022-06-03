@@ -76,7 +76,11 @@ echo "----------------------------------------- new service updated ------------
 # aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
 
 SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
-# echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+echo "-------------------------------------------------------------------------------------------------------"
+SERVICE_TASK=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services.deployments[0].runningCount`
+echo "-------------------------------------------------------------------------------------------------------"
+echo "SERVICE_TASK_STATUS:"$SERVICE_TASK
 
 while true ; do
   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
@@ -92,7 +96,7 @@ echo "--------------------------------------------------------------------------
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 echo "-------------------------------------------------------------------------------------------------------"
 
-SERVICE_TASK=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
+SERVICE_TASK=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services.deployments[0].runningCount`
 echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK
 echo "-------------------------------------------------------------------------------------------------------"
