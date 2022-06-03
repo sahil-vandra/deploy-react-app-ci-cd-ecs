@@ -82,11 +82,12 @@ SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --ser
 echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 
-# until SERVICE_TASK_STATUS=1
-# do
-#   sleep 5
-# done
+until SERVICE_TASK_STATUS=1
+do
+  SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
+  echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+done
 
-# SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .deployments[].runningCount`
-# echo "-------------------------------------------------------------------------------------------------------"
-# echo "SERVICE_TASK_STATUS: " $SERVICE_TASK_STATUS
+SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
+echo "-------------------------------------------------------------------------------------------------------"
+echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
