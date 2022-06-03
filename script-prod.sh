@@ -82,7 +82,7 @@ SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --ser
 echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 
-until SERVICE_TASK_STATUS=1
+until $SERVICE_TASK_STATUS=1
 do
   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
   echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
