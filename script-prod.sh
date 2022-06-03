@@ -78,9 +78,9 @@ aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME
 echo "---------------------------------------------- service ------------------------------------------------"
 
 
-SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[].deployments[].runningCount`
+SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
 echo "-------------------------------------------------------------------------------------------------------"
-echo "SERVICE_TASK_STATUS: " $SERVICE_TASK_STATUS
+echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 
 # until SERVICE_TASK_STATUS=1
 # do
