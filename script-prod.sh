@@ -73,8 +73,20 @@ echo "------------------------------------------ updare new service ------------
 aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
 echo "----------------------------------------- new service updated -----------------------------------------"
 
-
+echo "---------------------------------------------- service ------------------------------------------------"
 aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
+echo "---------------------------------------------- service ------------------------------------------------"
 
-SERVICE_TASK_STATUS=`aws ecs describe-services --services "${SERVICE_NAME}" | jq .deployments[].runningCount`
+
+SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .deployments[].runningCount`
+echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS: " $SERVICE_TASK_STATUS
+
+# until SERVICE_TASK_STATUS=1
+# do
+#   sleep 5
+# done
+
+# SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .deployments[].runningCount`
+# echo "-------------------------------------------------------------------------------------------------------"
+# echo "SERVICE_TASK_STATUS: " $SERVICE_TASK_STATUS
