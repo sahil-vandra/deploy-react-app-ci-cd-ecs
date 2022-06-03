@@ -73,32 +73,25 @@ echo "------------------------------------------ updare new service ------------
 aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --desired-count 3 --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
 echo "----------------------------------------- new service updated -----------------------------------------"
 
+# aws ecs describe-services --cluster sahil-react-demo-cluster --services sahil-react-demo-service
 # aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
 
-SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
-echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
-echo "-------------------------------------------------------------------------------------------------------"
-SERVICE_TASK=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services.deployments[0].runningCount`
-echo "-------------------------------------------------------------------------------------------------------"
-echo "SERVICE_TASK_STATUS:"$SERVICE_TASK
+# SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
+# echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+# echo "-------------------------------------------------------------------------------------------------------"
 
 while true ; do
-  SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
+  SERVICE_TASK_STATUS=`aws ecs describe-services --cluster sahil-react-demo-cluster --services sahil-react-demo-service | jq .services[0].deployments[0].runningCount`
   
-  if [ "$SERVICE_TASK_STATUS" -eq 1 ]; then
-      break
+  if [ "$SERVICE_TASK_STATUS" -eq 3 ]; then
+    echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+    break
   fi
 done
 
-SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
-
+SERVICE_TASK_STATUS=`aws ecs describe-services --cluster sahil-react-demo-cluster --services sahil-react-demo-service | jq .services[0].deployments[0].runningCount`
 echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
-echo "-------------------------------------------------------------------------------------------------------"
-
-SERVICE_TASK=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services.deployments[0].runningCount`
-echo "-------------------------------------------------------------------------------------------------------"
-echo "SERVICE_TASK_STATUS:"$SERVICE_TASK
 echo "-------------------------------------------------------------------------------------------------------"
 
 aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}"
