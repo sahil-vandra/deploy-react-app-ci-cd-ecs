@@ -72,3 +72,7 @@ echo "--------------------------------- previous task definition deregistered --
 echo "------------------------------------------ updare new service -----------------------------------------"
 aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
 echo "----------------------------------------- new service updated -----------------------------------------"
+
+aws ecs describe-services --services "${SERVICE_NAME}"
+
+# SERVICE_TASK_STATUS=`aws ecs describe-services --services "${SERVICE_NAME}" | jq .taskDefinition.containerDefinitions[].name`
