@@ -15,21 +15,21 @@ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 # login in to aws ecr
 # if not logged in the fire this command : "sudo chmod 666 /var/run/docker.sock"
-echo "--------------------------------- login in to ecr ---------------------------------"
+echo "-------------------------------------- login in to ecr ------------------------------------------------"
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 997817439961.dkr.ecr.ap-south-1.amazonaws.com
-echo "--------------------------------- login in to ecr succeed ---------------------------------"
+echo "--------------------------------------- login in to ecr succeed ---------------------------------------"
 
 # build new image
 # docker build -t 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo .
-echo "--------------------------------- start docker image building ---------------------------------"
+echo "--------------------------------------- start docker image building -----------------------------------"
 docker build -t ${ECR_IMAGE} .
-echo "--------------------------------- docker image build end---------------------------------"
+echo "--------------------------------------- docker image build end ----------------------------------------"
 
 # push image in aws ecr
 # docker push 997817439961.dkr.ecr.ap-south-1.amazonaws.com/sahil-react-demo:sahil-react-demo
-echo "--------------------------------- start docker image push ---------------------------------"
+echo "------------------------------------------ start docker image push ------------------------------------"
 docker push ${ECR_IMAGE}
-echo "--------------------------------- docker image pushed ---------------------------------"
+echo "------------------------------------------ docker image pushed ----------------------------------------"
 
 # get role arn store in variable 
 ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
@@ -54,21 +54,21 @@ sed -i "s#NAME#$NAME#g" task-definition.json
 TASK_DEF_REVISION=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.revision`
 echo "TASK_DEF_REVISION= " $TASK_DEF_REVISION
 
-echo "--------------------------------- task definition ---------------------------------
+echo "--------------------------------------------- task definition -----------------------------------------"
 cat task-definition.json
-echo "--------------------------------- task definition ---------------------------------
+echo "-------------------------------------------- task definition ------------------------------------------"
 
 # register new task definition from new generated task definition file
-echo "----------------------------registering new task definition-------------------------------"
+echo "-------------------------------------- registering new task definition --------------------------------"
 aws ecs register-task-definition --cli-input-json file://task-definition.json --region="${AWS_DEFAULT_REGION}"
-echo "----------------------------new task definition registered-------------------------------"
+echo "------------------------------------ new task definition registered -----------------------------------"
 
 # deregister previous task definiiton
-echo "----------------------------deregistering previous task definition-------------------------------"
+echo "--------------------------------- deregistering previous task definition------------------------------"
 aws ecs deregister-task-definition --region ap-south-1 --task-definition ${TASK_DEFINITION_NAME}:${TASK_DEF_REVISION}
-echo "----------------------------previous task definition deregistered-------------------------------"
+echo "--------------------------------- previous task definition deregistered -------------------------------"
 
 # update servise
-echo "----------------------------updare new service-------------------------------"
+echo "------------------------------------------ updare new service -----------------------------------------"
 aws ecs update-service --region ap-south-1 --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}" --force-new-deployment 
-echo "----------------------------new service updated-------------------------------"
+echo "----------------------------------------- new service updated -----------------------------------------"
