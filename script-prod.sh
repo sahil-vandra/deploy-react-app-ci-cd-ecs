@@ -82,11 +82,24 @@ SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --ser
 echo "-------------------------------------------------------------------------------------------------------"
 echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
 
-until $SERVICE_TASK_STATUS=1
-do
+while true ; do
   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
   echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+  
+  if [ "$SERVICE_TASK_STATUS" -eq 1 ]; then
+      break
+  fi
 done
+
+# for i in $(seq 1 100);
+# do
+#   SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
+#   echo "SERVICE_TASK_STATUS:"$SERVICE_TASK_STATUS
+
+#   if [ "$SERVICE_TASK_STATUS" == 1 ]; then
+#   echo "Test IF";
+# fi
+# done
 
 SERVICE_TASK_STATUS=`aws ecs describe-services --cluster "${CLUSTER_NAME}" --services "${SERVICE_NAME}" | jq .services[0].deployments[0].runningCount`
 echo "-------------------------------------------------------------------------------------------------------"
